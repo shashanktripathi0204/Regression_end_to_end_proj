@@ -1,10 +1,11 @@
-import os # file creation
-import sys # for erors that occour
-from src.logger import logging
+import os # for file creation
+import sys # for errors that occour
 from src.exception import CustomException
-import pandas as pd # reading the dataset
+from src.logger import logging
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
 from src.components.data_transformation import DataTransformation
 ## Initiliaze the data ingestion configuration
 
@@ -15,14 +16,14 @@ The dataclasses module in Python  provides a decorator and a set of tools for qu
 that are primarily intended to store data.
 
 """
-@dataclass
-class DataIngestionConfig:
-    """os.path provides a set of functions for working with file and directory paths in a platform-independent way."""
-    train_data_path:str = os.path.join('artifacts', 'train.csv') # this is the train data path
-    # artifacts is a folder that will have all the files that we will store example:- pickle, train, test
-    test_data_path:str = os.path.join('artifacts', 'test.csv')
-    raw_data_path:str = os.path.join('artifacts', 'raw.csv')
 
+@dataclass
+class DataIngestionconfig:
+    """os.path provides a set of functions for working with file and directory paths in a platform-independent way."""
+    train_data_path:str=os.path.join('artifacts','train.csv')# this is the train data path
+    # artifacts is a folder that will have all the files that we will store example:- pickle, train, test
+    test_data_path:str=os.path.join('artifacts','test.csv')
+    raw_data_path:str=os.path.join('artifacts','raw.csv')
 # THE ENTIRE CONFIG WILL BE SEND TO DATA INGESTION AND FOR THAT WE WILL CREATE A CLASS\
 
 
@@ -31,7 +32,7 @@ class DataIngestionConfig:
 ## create a class for Data Ingestion
 class DataIngestion:
     def __init__(self):
-        self.ingestion_config=DataIngestionConfig() # tuple of 3 data_paths 
+        self.ingestion_config=DataIngestionconfig()
 
     def initiate_data_ingestion(self):
         logging.info('Data Ingestion methods Starts')
@@ -60,13 +61,6 @@ class DataIngestion:
             raise CustomException(e,sys)
         
 
-"""
-# Running Data ingestion
 
-if __name__ == '__main__':
-    obj = DataIngestion()
-    train_data_path, test_data_path = obj.initiate_data_ingestion()
-    data_transformation = DataTransformation()
-    train_arr, test_arr = data_transformation.initiate_data_transformation(train_data_path, test_data_path) # if this is executed properly a pickle file will be added in the artifact
+
     
-"""

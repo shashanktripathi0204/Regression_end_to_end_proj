@@ -1,5 +1,3 @@
-# Feature engineering
-
 import sys
 from dataclasses import dataclass
 
@@ -22,8 +20,7 @@ class DataTransformationConfig:
 class DataTransformation:
     def __init__(self):
         self.data_transformation_config=DataTransformationConfig()
-    # initating data transformation object
-    # the below function gives us the pickle file that is the object of the preprocessor, for doing feature engineering 
+
     def get_data_transformation_object(self):
         try:
             logging.info('Data Transformation initiated')
@@ -63,30 +60,27 @@ class DataTransformation:
             ('cat_pipeline',cat_pipeline,categorical_cols)
             ])
             
-            logging.info('Pipeline Completed')
-
             return preprocessor
 
-            
+            logging.info('Pipeline Completed')
 
         except Exception as e:
             logging.info("Error in Data Trnasformation")
             raise CustomException(e,sys)
-
-    # here we will read our test and train file  
+        
     def initaite_data_transformation(self,train_path,test_path):
         try:
             # Reading train and test data
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
 
-            logging.info('Read  train and test data completed')
+            logging.info('Read train and test data completed')
             logging.info(f'Train Dataframe Head : \n{train_df.head().to_string()}')
             logging.info(f'Test Dataframe Head  : \n{test_df.head().to_string()}')
 
             logging.info('Obtaining preprocessing object')
 
-            preprocessing_obj = self.get_data_transformation_object() # calling of function within the class
+            preprocessing_obj = self.get_data_transformation_object()
 
             target_column_name = 'price'
             drop_columns = [target_column_name,'id']
@@ -97,17 +91,13 @@ class DataTransformation:
             input_feature_test_df=test_df.drop(columns=drop_columns,axis=1)
             target_feature_test_df=test_df[target_column_name]
             
-            ## Trnasformating using preprocessor obj( it is pickle file)
+            ## Trnasformating using preprocessor obj
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
 
             logging.info("Applying preprocessing object on training and testing datasets.")
             
-            """we are concatinating 2 datasets, after the concatination is done we can apply model
-            on the array, the array can be loaded verry quickly
-            
-            
-            side note numpy array is faster than pandas df"""
+
             train_arr = np.c_[input_feature_train_arr, np.array(target_feature_train_df)]
             test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
 
